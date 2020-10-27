@@ -17,7 +17,10 @@ class CreateTaxesTable extends Migration
             $table->id();
             $table->string('name');
             $table->double('rate');
-            $table->boolean('is_active')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

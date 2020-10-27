@@ -23,7 +23,7 @@ class BrandRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => [
+            'name' => [
                 'required',
                 'max:255',
                     Rule::unique('brands')->ignore($this->brand),

@@ -29,7 +29,7 @@ class TaxRequest extends FormRequest
                 Rule::unique('taxes')->ignore($this->tax),
             ],
 
-            'rate' => 'numeric|min:0|max:100'
+            'rate' => 'required|numeric|min:0|max:100'
         ];
     }
 

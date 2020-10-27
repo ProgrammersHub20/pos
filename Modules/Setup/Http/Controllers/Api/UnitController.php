@@ -4,35 +4,24 @@ namespace Modules\Setup\Http\Controllers\Api;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Modules\Setup\Entities\Unit;
 use Modules\Setup\Http\Requests\UnitRequest;
-use Modules\Setup\Transformers\UnitCollection;
-use Modules\Setup\Transformers\UnitResource;
-use App\Traits\ApiResponse;
 
 class UnitController extends Controller
 {
-    use ApiResponse;
     /**
      * Display a listing of the resource.
-     * @return Renderable
+     * @return Unit Collection
      */
     public function index()
     {
         $units = Unit::active()->orderBy('id','DESC')->paginate(15);
 
-        return new UnitCollection($units);
+        return $this->success($units, 'Unit data fetch successfully', 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
-    {
-        
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -41,16 +30,20 @@ class UnitController extends Controller
      */
     public function store(UnitRequest $request)
     {
-        
-        $data = $request->all();
-        $data['is_active'] = true;
-        if(!$data['base_unit']){
-            $data['operator'] = '*';
-            $data['operation_value'] = 1;
-        }
-        Unit::create($data);
+        try {
+            $data = $request->all();
+            if(!$data['base_unit']){
+                $data['operator'] = '*';
+                $data['operation_value'] = 1;
+            }
+            Unit::create($data);
 
-        return $this->success('Unit Created.',201);
+            return $this->success(null,'Unit Created.',201);            
+        } catch (\Exception $e) {
+            return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
+        }
+        
+
 
     }
 
@@ -61,20 +54,15 @@ class UnitController extends Controller
      */
     public function show($id)
     {
-        $unit = Unit::findOrFail($id);
-
-        return new UnitResource($unit);
+        try {
+            $unit = Unit::findOrFail($id);
+            return $this->success($units, 'Unit fetch successfully', 200);
+        } catch (Exception $e) {
+            return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('setup::edit');
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -84,10 +72,15 @@ class UnitController extends Controller
      */
     public function update(UnitRequest $request, $id)
     {
-        $unit = Unit::findOrFail($id);
-        $unit->update($request->all());
+        try {
+            $unit = Unit::findOrFail($id);
+            $unit->update($request->all());
 
-        return $this->success('Unit Updated.',204);
+            return $this->success(null,'Unit Updated.',204);            
+        } catch (\Exception $e) {
+            return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
+        }
+
 
     }
 
@@ -98,6 +91,11 @@ class UnitController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Unit::find($id)->delete();
+            return $this->success(null,'Unit Deleted.',200);
+        } catch (\Exception $e) {
+            return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
+        }
     }
 }

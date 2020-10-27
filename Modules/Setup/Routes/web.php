@@ -11,6 +11,3 @@
 |
 */
 
-Route::prefix('setup')->group(function() {
-    Route::get('/', 'SetupController@index');
-});

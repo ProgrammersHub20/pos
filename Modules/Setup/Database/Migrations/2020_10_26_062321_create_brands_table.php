@@ -17,7 +17,13 @@ class CreateBrandsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('image')->nullable();
-            $table->boolean('is_active')->nullable();
+            $table->string('contact_person')->nullable();
+            $table->string('contact_phone')->nullable();
+            $table->string('contact_address')->nullable();
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

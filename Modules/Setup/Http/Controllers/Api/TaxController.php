@@ -4,17 +4,12 @@ namespace Modules\Setup\Http\Controllers\Api;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use App\Http\Controllers\Controller;
 use Modules\Setup\Entities\Tax;
 use Modules\Setup\Http\Requests\TaxRequest;
-use Modules\Setup\Transformers\TaxCollection;
-use Modules\Setup\Transformers\TaxResource;
-use App\Traits\ApiResponse;
 
 class TaxController extends Controller
 {
-    use ApiResponse;
-
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -23,7 +18,7 @@ class TaxController extends Controller
     {
         $taxes = Tax::active()->orderBy('id','DESC')->paginate(15);
 
-        return new TaxCollection($taxes);
+        return $this->success($taxes, 'Tax data fetch successfully', 200);
     }
 
     /**
@@ -42,35 +37,35 @@ class TaxController extends Controller
      */
     public function store(TaxRequest $request)
     {
-        $data['name'] = $request->name;
-        $data['rate'] = $request->rate;
-        $data['is_active'] = true;
-        Tax::create($data);
+        try {
+            $data = $request->all();
+            Tax::create($data);
 
-        return $this->success('Tax Created.',201);
+            return $this->success(null,'Tax Created.',201);
+        } catch (\Exception $e) {
+            return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
+        }
+
+        
     }
 
     /**
      * Show the specified resource.
      * @param int $id
-     * @return Renderable
+     * @return json
      */
     public function show($id)
     {
-        $tax = Tax::findOrFail($id);
-        
-        return new TaxResource($tax);
+        try {
+            $tax = Tax::findOrFail($id);
+            return $this->success($tax,'Tax fetch successfully.',201);
+            
+        } catch (\Exception $e) {
+            return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Renderable
-     */
-    public function edit($id)
-    {
-        return view('setup::edit');
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -80,10 +75,16 @@ class TaxController extends Controller
      */
     public function update(TaxRequest $request, $id)
     {
-        $tax = Tax::findOrFail($id);
-        $tax->update($request->all());
+        try {
+            $tax = Tax::findOrFail($id);
+            $tax->update($request->all());
 
-        return $this->success('Tax Updated.',204);
+            return $this->success(null,'Tax Updated.',204);            
+        } catch (\Exception $e) {
+            return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
+        }
+
+
 
     }
 
@@ -94,6 +95,11 @@ class TaxController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            Tax::find($id)->delete();
+            return $this->success(null,'Tax deleted.',204); 
+        } catch (\Exception $e) {
+            return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
+        }
     }
 }

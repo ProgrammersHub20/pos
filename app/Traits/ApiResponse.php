@@ -3,7 +3,13 @@ namespace App\Traits;
 
 trait ApiResponse{
 
-    protected function success($message = null, $code = 200, $data = null)
+	/**
+	 * @param  data
+	 * @param  message
+	 * @param  code
+	 * @return json
+	 */
+    protected function success($data = null, $message = null, $code = 200)
 	{
 		return response()->json([
 			'status'=> 'Success', 
@@ -12,7 +18,11 @@ trait ApiResponse{
 		], $code);
     }
     
-
+    /**
+     * @param  message
+     * @param  code
+     * @return json
+     */
 	protected function error($message = null, $code)
 	{
 		return response()->json([
