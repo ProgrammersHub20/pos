@@ -38,8 +38,8 @@ Route::namespace('Api')->group(function(){
     Route::apiResource('tax', TaxController::class);
 
 
-    // Warehouse
-    Route::apiResource('warehouse', WarehouseController::class);
+    // Store/Warehouse 
+    Route::apiResource('store', StoreController::class);
 
 });
 

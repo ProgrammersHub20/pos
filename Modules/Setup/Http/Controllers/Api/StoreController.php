@@ -5,41 +5,38 @@ namespace Modules\Setup\Http\Controllers\Api;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Modules\Setup\Entities\Category;
-use Modules\Setup\Http\Requests\CategoryRequest;
+use Modules\Setup\Entities\Store;
+use Modules\Setup\Http\Requests\StoreRequest;
 
-class CategoryController extends Controller
+class StoreController extends Controller
 {
-
     /**
      * Display a listing of the resource.
-     * @return CategoryCollection
+     * @return Store Collection
      */
     public function index()
     {
-        $categories = Category::active()->orderBy('id','DESC')->paginate(15);
+        $brands = Store::active()->orderBy('id','DESC')->paginate(15);
 
-        return $this->success($categories, 'Category data fetch successfully', 200);
+        return $this->success($brands, 'Store data fetch successfully', 200);
     }
-
 
     /**
      * Store a newly created resource in storage.
      * @param Request $request
      * @return json
      */
-    public function store(CategoryRequest $request)
+    public function store(StoreRequest $request)
     {
         try{
-            $data = $request->all();
-            Category::create($data);
+            $data = $request->except('weekend');
+            $data['weekend'] = json_encode($request->weekend);
+            Store::create($data);
 
-            return $this->success(null, 'Category Created.',201);
+            return $this->success(null, 'Store Created.',201);
         }catch(\Exception $e){
             return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
         }
-        
-
     }
 
     /**
@@ -50,9 +47,9 @@ class CategoryController extends Controller
     public function show($id)
     {
         try{
-            $category = Category::findOrFail($id);
+            $store = Store::findOrFail($id);
 
-            return $this->success($category, 'Category fetch successfully', 200);
+            return $this->success($store, 'Store fetch successfully', 200);
 
         }catch(\Exception $e){
             return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
@@ -66,18 +63,18 @@ class CategoryController extends Controller
      * @param int $id
      * @return json
      */
-    public function update(CategoryRequest $request, $id)
+    public function update(StoreRequest $request, $id)
     {
         try {
-            $data = $request->all();
-            $category = Category::findOrFail($id);
-            $category->update($data);
+            $data = $request->except('weekend');
+            $data['weekend'] = json_encode($request->weekend);
+            $store = Store::findOrFail($id);
+            $store->update($data);
 
-            return $this->success(null,'Category Updated.',204);
+            return $this->success(null,'Store Updated.',200);
         } catch (\Exception $e) {
              return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
         }
-       
     }
 
     /**
@@ -88,8 +85,8 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         try {
-            Category::find($id)->delete();
-            return $this->success(null,'Category Deleted.',200);
+            Store::find($id)->delete();
+            return $this->success(null,'Store Deleted.',200);
         } catch (\Exception $e) {
             return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
         }
