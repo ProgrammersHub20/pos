@@ -11,6 +11,3 @@
 |
 */
 
-Route::prefix('hrm')->group(function() {
-    Route::get('/', 'HRMController@index');
-});
