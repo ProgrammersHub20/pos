@@ -41,6 +41,17 @@ Route::namespace('Api')->group(function(){
     // Store/Warehouse 
     Route::apiResource('store', StoreController::class);
 
+
+    // Varient 
+    Route::apiResource('varient', VarientController::class);
+        // varient value
+    Route::get('varient_value/{id}',[VarientController::class, 'getVarientValue']);
+    Route::post('varient_value',[VarientController::class, 'storeVarientValue']);
+    Route::put('varient_value/{id}',[VarientController::class, 'updateVarientValue']);
+    Route::delete('varient_value/{id}',[VarientController::class, 'deleteVarientValue']);
+
+    
+
 });
 
 
