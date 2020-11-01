@@ -50,6 +50,11 @@ Route::namespace('Api')->group(function(){
     Route::put('varient_value/{id}',[VarientController::class, 'updateVarientValue']);
     Route::delete('varient_value/{id}',[VarientController::class, 'deleteVarientValue']);
 
+
+
+    // Customer Group
+    Route::apiResource('customer_group', CustomerGroupController::class);
+
     
 
 });
