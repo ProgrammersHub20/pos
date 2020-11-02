@@ -5,10 +5,10 @@ namespace Modules\Setup\Http\Controllers\Api;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Modules\Setup\Entities\Tax;
-use Modules\Setup\Http\Requests\TaxRequest;
+use Modules\Setup\Entities\CustomerGroup;
+use Modules\Setup\Http\Requests\CustomerGroupRequest;
 
-class TaxController extends Controller
+class CoustomerGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,37 +16,29 @@ class TaxController extends Controller
      */
     public function index()
     {
-        $taxes = Tax::active()->orderBy('id','DESC')->paginate(15);
+        $customerGroup = CustomerGroup::orderBy('id','DESC')->paginate(15);
 
-        return $this->success($taxes, 'Tax data fetch successfully', 200);
+        return $this->success($customerGroup, 'Customer group data fetch successfully', 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Renderable
-     */
-    public function create()
-    {
-        return view('setup::create');
-    }
+
 
     /**
      * Store a newly created resource in storage.
      * @param Request $request
-     * @return Renderable
+     * @return json
      */
-    public function store(TaxRequest $request)
+    public function store(CustomerGroupRequest $request)
     {
-        try {
+         try {
             $data = $request->all();
-            Tax::create($data);
+            CustomerGroup::create($data);
 
             return $this->success(null,'Tax Created.',201);
         } catch (\Exception $e) {
             return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
         }
 
-        
     }
 
     /**
@@ -57,8 +49,8 @@ class TaxController extends Controller
     public function show($id)
     {
         try {
-            $tax = Tax::findOrFail($id);
-            return $this->success($tax,'Tax fetch successfully.',201);
+            $CustomerGroup = CustomerGroup::findOrFail($id);
+            return $this->success($CustomerGroup,'Customer group fetch successfully.',201);
             
         } catch (\Exception $e) {
             return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
@@ -66,38 +58,34 @@ class TaxController extends Controller
     }
 
 
-
     /**
      * Update the specified resource in storage.
      * @param Request $request
      * @param int $id
-     * @return json
+     * @return Renderable
      */
-    public function update(TaxRequest $request, $id)
+    public function update(CustomerGroupRequest $request, $id)
     {
         try {
-            $tax = Tax::findOrFail($id);
-            $tax->update($request->all());
+            $customerGrout = CustomerGroup::findOrFail($id);
+            $customerGrout->update($request->all());
 
-            return $this->success(null,'Tax Updated.',204);            
+            return $this->success(null,'Customer group Updated.',204);            
         } catch (\Exception $e) {
             return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
         }
-
-
-
     }
 
     /**
      * Remove the specified resource from storage.
      * @param int $id
-     * @return json
+     * @return Renderable
      */
     public function destroy($id)
     {
         try {
-            Tax::find($id)->delete();
-            return $this->success(null,'Tax deleted.',204); 
+            CustomerGroup::find($id)->delete();
+            return $this->success(null,'Customer Group deleted.',204); 
         } catch (\Exception $e) {
             return $this->error("{$e->getMessage()} at {$e->getFile()} in {$e->getLine()}",500);
         }
