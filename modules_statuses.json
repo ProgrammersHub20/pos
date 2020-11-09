@@ -1,4 +1,5 @@
 {
     "Setup": true,
-    "HRM": true
+    "HRM": true,
+    "Expense": true
 }
